@@ -53,7 +53,6 @@ module.exports = {
 				});
 			});
 		});
-		
 	},
 
 	//When processing a job that timeouts, the job-queue-size should revert back to 1.
