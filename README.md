@@ -51,3 +51,19 @@ mrWolf.enqueue('sendEmail', {
 });
 
 ```
+
+### Start working
+
+Note that starting mr-wolf on many servers lets them share the work-load and process the queue faster.  
+
+Here's how you get start it up:
+```js
+
+mrWolf.start({
+  //Add some listeners (optional)
+  onError : function(job, error) { },
+  onStart : function(job) { },
+  onComplete : function(job) { },
+  onEnqueue : function(job) { }
+});
+```
