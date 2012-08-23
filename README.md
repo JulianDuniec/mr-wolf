@@ -10,7 +10,14 @@ Distributed work-queue for nodejs
 
 ### Create a job
 
-Place your work in the /jobs-directory.  
+Place your work in the default /jobs-directory. Note that you can change the location of this directory using
+
+```js
+
+mrWolf.setJobDirectory('./some/other/place');
+
+```
+
 example: /jobs/sendEmail.js
 ```js
 
