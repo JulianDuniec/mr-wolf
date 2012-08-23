@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "nodeunit" : "*",
-    "mongoose" : "3.0.x"
+    "mongodb" : "1.1.x"
   },
   "devDependencies": {},
   "optionalDependencies": {}

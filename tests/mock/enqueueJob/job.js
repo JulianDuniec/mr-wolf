@@ -1,5 +1,7 @@
 module.exports = {
 	receive : function(meta, callback) {
-		callback(null);
+		setTimeout(function() {
+			callback(null);
+		}, 200);
 	}
 }
