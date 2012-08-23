@@ -1,0 +1,20 @@
+{
+  "author": "Julian Duniec <julian.duniec@gmail.com> (http://julianduniec.wordpress.com)",
+  "name": "mr-wolf",
+  "description": "Distributed work-queue for nodejs",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JulianDuniec/mr-wolf.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "nodeunit tests"
+  },
+  "engines": {
+    "node": "~0.6.7"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {}
+}
