@@ -1,6 +1,6 @@
 var mrWolf = require('../');
 
-module.exports = {
+exports.group = {
 	setUp : function(cb) {
 		mrWolf.init(function() {
 			mrWolf.drop(cb);
@@ -54,23 +54,35 @@ module.exports = {
 			});
 		});
 	},
+
+
 	erraneousJob : function(test) {
 		var dir = __dirname + "/mock/erraneousJob";
-		mrWolf.drop(function() {
-			mrWolf.setJobDirectory(dir);
-			mrWolf.enqueue("job", {}, function(err, job) {
-				mrWolf.processNext(function(err) {
-					mrWolf.stats(function(err, stats) {
-						test.equal(stats.queueCount, 0, "Job wasn't pulled from queue, queueCount:" + stats.queueCount);
-						test.equal(stats.inProgressCount, 0, "Job still marked as inProgress, inProgressCount:" + stats.inProgressCount);
-						test.equal(stats.finishedCount, 0, "Job marked as finished " + stats.finishedCount);
-						test.equal(stats.errorCount, 1, "Job wasn't marked as erraneous: " + stats.errorCount);
-						test.done();
+		mrWolf.setJobDirectory(dir);
+		//Job throws error
+		mrWolf.enqueue("job", {}, function(err, job) {
+			mrWolf.processNext(function(err) {
+				mrWolf.stats(function(err, stats) {
+					test.equal(stats.queueCount, 0, "Job wasn't pulled from queue, queueCount:" + stats.queueCount);
+					test.equal(stats.inProgressCount, 0, "Job still marked as inProgress, inProgressCount:" + stats.inProgressCount);
+					test.equal(stats.finishedCount, 0, "Job marked as finished " + stats.finishedCount);
+					test.equal(stats.errorCount, 1, "Job wasn't marked as erraneous: " + stats.errorCount);
+					
+					//Job throws error
+					mrWolf.enqueue("job2", {}, function(err, job) {
+						mrWolf.processNext(function(err) {
+							mrWolf.stats(function(err, stats) {
+								test.equal(stats.queueCount, 0, "Job2 wasn't pulled from queue, queueCount:" + stats.queueCount);
+								test.equal(stats.inProgressCount, 0, "Job2 still marked as inProgress, inProgressCount:" + stats.inProgressCount);
+								test.equal(stats.finishedCount, 0, "Job2 marked as finished " + stats.finishedCount);
+								test.equal(stats.errorCount, 2, "Job2 wasn't marked as erraneous: " + stats.errorCount);
+								test.done();
+							});
+						});
 					});
 				});
 			});
 		});
-	
 	},
 
 	//When processing a job that timeouts, the job-queue-size should revert back to 1.
