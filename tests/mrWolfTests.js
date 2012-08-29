@@ -1,6 +1,6 @@
 var mrWolf = require('../');
 
-exports.group = {
+exports.unittests = {
 	setUp : function(cb) {
 		mrWolf.init(function() {
 			mrWolf.drop(cb);
@@ -85,10 +85,38 @@ exports.group = {
 		});
 	},
 
+	enqueueListener : function(test) {
+		var dir = __dirname + "/mock/startingAndListening";
+
+		var jobName = "job";
+		mrWolf.setJobDirectory(dir);
+		mrWolf.start({
+			onEnqueue : function(job) {
+				test.equal(job.name, jobName);
+				mrWolf.stop();
+				test.done();
+			}
+		});
+
+		mrWolf.enqueue(jobName, {}, function(err, job) {
+			test.equal(err, null);
+		});
+
+	},
+	/*
+	LISTENERS:
+	 onError : function(job, error) { },
+	  onStart : function(job) { },
+  onComplete : function(job) { },
+	*/
+	//Periodicitet
+
+	//Behaviour when no jobs are in queue
+
+
 	//When processing a job that timeouts, the job-queue-size should revert back to 1.
 	
 	// Starting and listening
 
-	//When processing a job that is finished, the job-queue-size should be zero, the in-progress-count should be zero and the finished-count should be 1
 	//When adding a job in the directory that does contain the receive-method, an error should occur.
 };
