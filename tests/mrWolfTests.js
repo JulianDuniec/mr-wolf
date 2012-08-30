@@ -103,6 +103,24 @@ exports.unittests = {
 		});
 
 	},
+
+	errorListener : function(test) {
+		var dir = __dirname + "/mock/erraneousJob";
+		var jobName = "job";
+		mrWolf.setJobDirectory(dir);
+		mrWolf.start({
+			onError : function(job, error) {
+				test.notEqual(error, null);
+				test.equal(job.name, jobName);
+				mrWolf.stop();
+				test.done();
+			}
+		});
+
+		mrWolf.enqueue(jobName, {}, function(err, job) {
+			test.equal(err, null);
+		});
+	}
 	/*
 	LISTENERS:
 	 onError : function(job, error) { },
