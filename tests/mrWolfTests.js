@@ -120,12 +120,36 @@ exports.unittests = {
 		mrWolf.enqueue(jobName, {}, function(err, job) {
 			test.equal(err, null);
 		});
+	},
+
+	startAndCompleteListeners : function(test) {
+		var dir = __dirname + "/mock/startingAndListening";
+		var jobName = "job";
+		mrWolf.setJobDirectory(dir);
+		mrWolf.start({
+			//The job should start after enqueue
+			onStart : function(job) {
+				test.equal(job.name, jobName);
+				
+			},
+			//The job should start after enqueue
+			onComplete : function(job) {
+				test.equal(job.name, jobName);
+				mrWolf.stop();
+				
+				test.done();
+			}
+		});
+
+		mrWolf.enqueue(jobName, {}, function(err, job) {
+			test.equal(err, null);
+		});
 	}
+
+	
 	/*
 	LISTENERS:
-	 onError : function(job, error) { },
-	  onStart : function(job) { },
-  onComplete : function(job) { },
+	onComplete : function(job) { },
 	*/
 	//Periodicitet
 
