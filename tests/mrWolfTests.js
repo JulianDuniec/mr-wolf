@@ -146,19 +146,12 @@ exports.unittests = {
 		});
 	}
 
-	
-	/*
-	LISTENERS:
-	onComplete : function(job) { },
-	*/
 	//Periodicitet
 
 	//Behaviour when no jobs are in queue
 
 
 	//When processing a job that timeouts, the job-queue-size should revert back to 1.
-	
-	// Starting and listening
 
 	//When adding a job in the directory that does contain the receive-method, an error should occur.
 };
