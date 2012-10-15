@@ -144,6 +144,70 @@ exports.unittests = {
 		mrWolf.enqueue(jobName, {}, function(err, job) {
 			test.equal(err, null);
 		});
+	},
+
+	enqueueFutureJob : function(test) {
+		var dir = __dirname + "/mock/startingAndListening";
+		var jobName = "job";
+		var seconds = 1;
+		var enqueueDate = new Date();
+		var startAtDate = new Date();
+		var expectedDiff = seconds*1000;
+		startAtDate.setSeconds(startAtDate.getSeconds()+seconds)
+
+		mrWolf.setJobDirectory(dir);
+		mrWolf.start({
+			//The job should start after enqueue
+			onStart : function(job) {
+				test.equal(job.name, jobName);
+				var executionDate = new Date();
+				var diff = executionDate.getTime()-enqueueDate.getTime();
+				test.ok(diff >= expectedDiff, "The diff was too small: " + diff + ", expected " + expectedDiff);
+				test.done();
+			}
+		});
+
+
+		mrWolf.enqueue(jobName, {
+			startAtDate : startAtDate
+		}, function(err, job) {
+			test.equal(err, null);
+		});
+	},
+
+	enqueuePeriodical : function(test) {
+		var dir = __dirname + "/mock/startingAndListening";
+		var jobName = "job";
+		var seconds = 1;
+		var count = 0;
+		var maxCount = 3;
+		var enqueueDate = new Date();
+		var startAtDate = new Date();
+		startAtDate.setSeconds(startAtDate.getSeconds()+seconds)
+
+		mrWolf.setJobDirectory(dir);
+		mrWolf.start({
+			//The job should start after enqueue
+			onStart : function(job) {
+				if(count <= maxCount) {
+					test.equal(job.name, jobName);
+					var executionDate = new Date();
+					var expectedDiff = seconds * ++count * 1000;
+					var diff = executionDate.getTime()-enqueueDate.getTime();
+					test.ok(diff >= expectedDiff, "The diff was too small: " + diff + ", expected " + expectedDiff);
+					if(count == maxCount)
+						test.done();
+				}
+				
+			}
+		});
+
+
+		mrWolf.enqueue(jobName, {
+			periodicalSeconds : seconds,
+		}, function(err, job) {
+			test.equal(err, null);
+		});
 	}
 
 	//Periodicitet
