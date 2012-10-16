@@ -2,7 +2,7 @@ var mrWolf = require('../');
 
 exports.unittests = {
 	setUp : function(cb) {
-		mrWolf.init(function() {
+		mrWolf.init({}, function() {
 			mrWolf.drop(cb);
 		});
 	},
@@ -189,6 +189,7 @@ exports.unittests = {
 		mrWolf.start({
 			//The job should start after enqueue
 			onStart : function(job) {
+				console.log("Start");
 				if(count <= maxCount) {
 					test.equal(job.name, jobName);
 					var executionDate = new Date();
@@ -203,12 +204,34 @@ exports.unittests = {
 		});
 
 
-		mrWolf.enqueue(jobName, {
-			periodicalSeconds : seconds,
-		}, function(err, job) {
+		mrWolf.enqueuePeriodical(jobName, {}, seconds, function(err, job) {
 			test.equal(err, null);
 		});
-	}
+	},
+
+	/*
+		Fix for bug: When enqueue periodial two times, job is queued twice.
+		It should only be enqueued once.
+	*/
+	enqueuePeriodicalDuplicate : function(test) {
+		var dir = __dirname + "/mock/startingAndListening";
+		var jobName = "job";
+		var seconds = 1;
+		
+		mrWolf.setJobDirectory(dir);
+		
+		//Enqueue two times (simulate multiple servers starting up and enqueuing the job)
+		mrWolf.enqueuePeriodical(jobName, {}, seconds, function(err, job) {
+			test.equal(err, null);
+			mrWolf.enqueuePeriodical(jobName, {}, seconds, function(err, job) {
+				test.equal(err, null);
+				mrWolf.stats(function(err, stats) {
+					test.equal(stats.queueCount, 1);
+					test.done();
+				});
+			});
+		});
+	},
 
 	//Periodicitet
 
