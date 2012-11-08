@@ -227,16 +227,41 @@ exports.unittests = {
 				test.equal(err, null);
 				mrWolf.stats(function(err, stats) {
 					test.equal(stats.queueCount, 1);
-					test.done();
+					//Wait until periodical is done
+					setTimeout(function() {
+						test.done();
+					}, seconds * 1000);
 				});
 			});
 		});
 	},
 
-	//Periodicitet
+	cleanJobTable : function(test) {
+		var dir = __dirname + "/mock/startingAndListening";
+		var jobName = "job";
+		var cleanupInterval = 1000;
+		mrWolf
+			.setJobDirectory(dir)
+			.setCleanupInterval(cleanupInterval);
+		mrWolf.enqueue("job", {}, function() {
 
-	//Behaviour when no jobs are in queue
+		});
+		mrWolf.start({
+			onComplete : function(job) {
+				setTimeout(function() {
+					mrWolf.stats(function(err, stats) {
+						test.equal(stats.queueCount, 0, "Job wasn't pulled from queue, queueCount:" + stats.queueCount);
+						test.equal(stats.inProgressCount, 0, "Job still marked as inProgress, inProgressCount:" + stats.inProgressCount);
+						test.equal(stats.finishedCount, 0, "Job wasn't removed from finished: " + stats.finishedCount);
+						test.done();
+					});
+				}, cleanupInterval*2);
+				
+			}
+		});
+		
 
+	}
 
 	//When processing a job that timeouts, the job-queue-size should revert back to 1.
 
