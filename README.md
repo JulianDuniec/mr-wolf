@@ -1,4 +1,3 @@
-[![build status](https://secure.travis-ci.org/JulianDuniec/mr-wolf.png)](http://travis-ci.org/JulianDuniec/mr-wolf)
  
 mr-wolf
 =======
