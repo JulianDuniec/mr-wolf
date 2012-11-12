@@ -189,7 +189,7 @@ exports.unittests = {
 		mrWolf.start({
 			//The job should start after enqueue
 			onStart : function(job) {
-				console.log("Start");
+				console.log("Start", count);
 				if(count <= maxCount) {
 					test.equal(job.name, jobName);
 					var executionDate = new Date();
